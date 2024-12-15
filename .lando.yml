@@ -16,6 +16,6 @@ services:
 
 proxy:
   appserver:
-    - api.mc-haproxy-whitelist-management.lndo.site
+    - mc-haproxy-whitelist-management.lndo.site
   phpmyadmin:
     - phpmyadmin.mc-haproxy-whitelist-management.lndo.site
