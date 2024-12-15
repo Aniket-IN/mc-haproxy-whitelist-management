@@ -7,6 +7,8 @@ import { AxiosError, AxiosResponse } from "axios";
 export default function Dashboard() {
     const user = usePage().props.auth.user;
 
+    const { axios } = useAxios();
+
     const { isLoading, isSuccess, isError, data } = useQuery<
         AxiosResponse<{
             ip_address: string;
@@ -15,6 +17,7 @@ export default function Dashboard() {
     >({
         queryKey: ["whitelist-ip"],
         queryFn: () => axios.post("/whitelist-ip"),
+        staleTime: Infinity,
     });
 
     return (
