@@ -1,0 +1,21 @@
+name: mc-haproxy-whitelist-management
+recipe: laravel
+
+config:
+  webroot: ./public
+  php: "8.2"
+  via: apache #or nginx
+  database: mysql:8.0.35 #or mariadb or postgres
+  cache: redis #or memcached
+
+services:
+  phpmyadmin:
+    type: phpmyadmin
+    hosts:
+      - database
+
+proxy:
+  appserver:
+    - api.mc-haproxy-whitelist-management.lndo.site
+  phpmyadmin:
+    - phpmyadmin.mc-haproxy-whitelist-management.lndo.site
