@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'haproxy' => [
+        'api_host' => env('HAPROXY_HOST'),
+        'credentials' => [
+            'username' => env('HAPROXY_API_USERNAME'),
+            'password' => env('HAPROXY_API_PASSWORD'),
+        ],
+    ],
+
 ];
