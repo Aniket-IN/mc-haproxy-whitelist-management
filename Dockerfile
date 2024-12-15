@@ -23,7 +23,7 @@ RUN composer install \
 ###########################################
 # Front-end dependencies
 ###########################################
-FROM node:16 as node
+FROM node:20 as node
 
 ENV ROOT=/var/www/html
 WORKDIR ${ROOT}
@@ -37,7 +37,7 @@ COPY package*.json \
     vite.config.js \
     tailwind.config.js \
     postcss.config.js \
-    jsconfig.json \
+    tsconfig.json \
     ./
 
 RUN npm install && npm run build
