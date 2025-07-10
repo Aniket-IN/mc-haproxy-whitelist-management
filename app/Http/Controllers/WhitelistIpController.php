@@ -50,6 +50,7 @@ class WhitelistIpController extends Controller
                 'id' => $aliasId,
                 'address' => $addresses,
                 'detail' => $details,
+                'apply' => true,
             ]);
 
             if ($response->json('code') !== 200) {
