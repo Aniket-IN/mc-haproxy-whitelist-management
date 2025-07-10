@@ -45,11 +45,11 @@ class WhitelistIpController extends Controller
             if (! $aliasId = $response->json('data.0.id')) {
                 throw new \Exception('Alias not found');
             }
-
+            
             $response = $client->patch('/api/v2/firewall/alias', [
                 'id' => $aliasId,
                 'address' => $addresses,
-                'details' => $details,
+                'detail' => $details,
             ]);
 
             if ($response->json('code') !== 200) {
