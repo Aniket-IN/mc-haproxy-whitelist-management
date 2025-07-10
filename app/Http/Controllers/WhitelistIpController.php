@@ -21,30 +21,40 @@ class WhitelistIpController extends Controller
         ]);
 
         DB::transaction(function () {
-            $ips = UserIp::lockForUpdate()->get();
+            $ips = UserIp::with(['user'])->lockForUpdate()->get();
 
-            $client = Http::baseUrl(config('services.haproxy.api_host'))
-                ->withBasicAuth(config('services.haproxy.credentials.username'), config('services.haproxy.credentials.password'));
-
-            $endpoint = '/v3/services/haproxy/configuration/frontends/minecraft-in/acls';
-
-            $response = $client->throw()->get($endpoint);
-
-            $version = $response->header('Configuration-Version');
-
-            $data = [];
+            $addresses = [];
+            $details = [];
 
             foreach ($ips as $ip) {
-                $data[] = [
-                    'acl_name' => 'whitelist',
-                    'criterion' => 'src',
-                    'value' => $ip->ip_address,
-                ];
+                $addresses[] = $ip->ip_address;
+                $details[] = $ip->user->name;
             }
 
-            $client->throw()->withQueryParameters([
-                'version' => $version,
-            ])->put($endpoint, $data);
+            $client = Http::baseUrl(config('services.pfsense.api_host'))
+                ->withBasicAuth(
+                    config('services.pfsense.credentials.username'),
+                    config('services.pfsense.credentials.password')
+                );
+
+            $response = $client->get('/api/v2/firewall/aliases', [
+                'type' => 'host',
+                'name' => 'Minecraft_Whitelisted_IPs',
+            ]);
+
+            if (! $aliasId = $response->json('data.0.id')) {
+                throw new \Exception('Alias not found');
+            }
+
+            $response = $client->patch('/api/v2/firewall/alias', [
+                'id' => $aliasId,
+                'address' => $addresses,
+                'details' => $details,
+            ]);
+
+            if ($response->json('code') !== 200) {
+                throw new \Exception('Failed to update alias');
+            }
         });
 
         return $ip;

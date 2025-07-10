@@ -43,4 +43,12 @@ return [
         ],
     ],
 
+    'pfsense' => [
+        'api_host' => env('PFSENSE_HOST'),
+        'credentials' => [
+            'username' => env('PFSENSE_USERNAME'),
+            'password' => env('PFSENSE_PASSWORD'),
+        ],
+    ],
+
 ];
